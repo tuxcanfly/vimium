@@ -687,9 +687,7 @@ HUD = {
       "bottom: 0px;" +
       "color: black;" +
       "height: 13px;" +
-      "width: auto;" +
-      "max-width: 400px;" +
-      "min-width: 150px;" +
+      "width: 100%;" +
       "text-align: left;" +
       "background-color: #ebebeb;" +
       "padding: 3px 3px 2px 3px;" +
@@ -776,8 +774,6 @@ HUD = {
   displayElement: function() {
     if (!HUD._displayElement) {
       HUD._displayElement = HUD.createHudElement();
-      // Keep this far enough to the right so that it doesn't collide with the "popups blocked" chrome HUD.
-      HUD._displayElement.style.right = "150px";
       HUD.updatePageZoomLevel(currentZoomLevel);
     }
     return HUD._displayElement;
