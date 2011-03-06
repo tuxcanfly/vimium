@@ -11,6 +11,7 @@ var getCurrentUrlHandlers = []; // function(url)
 
 var insertMode = false;
 var findMode = false;
+var colonMode = false;
 var findModeQuery = "";
 var findModeQueryHasResults = false;
 var isShowingHelpDialog = false;
@@ -349,7 +350,15 @@ function onKeypress(event) {
         // Don't let the space scroll us if we're searching.
         if (event.keyCode == keyCodes.space)
           event.preventDefault();
-      } else if (!insertMode && !findMode) {
+      }
+      else if (colonMode) {
+        handleKeyCharForColonMode(keyChar);
+
+        // Don't let the space scroll us if we're searching.
+        if (event.keyCode == keyCodes.space)
+          event.preventDefault();
+      }
+      else if (!insertMode && !findMode) {
         if (currentCompletionKeys.indexOf(keyChar) != -1) {
           event.preventDefault();
           event.stopPropagation();
@@ -417,6 +426,19 @@ function onKeydown(event) {
     }
     else if (event.keyCode == keyCodes.enter)
       handleEnterForFindMode();
+  }
+  else if (colonMode)
+  {
+    if (isEscape(event))
+      exitColonMode();
+    // Don't let backspace take us back in history.
+    else if (event.keyCode == keyCodes.backspace || event.keyCode == keyCodes.deleteKey)
+    {
+      handleDeleteForCommandMode();
+      event.preventDefault();
+    }
+    else if (event.keyCode == keyCodes.enter)
+      handleEnterForCommandMode();
   }
   else if (isShowingHelpDialog && isEscape(event))
   {
@@ -520,6 +542,31 @@ function handleKeyCharForFindMode(keyChar) {
   showFindModeHUDForQuery();
 }
 
+function handleDeleteForCommandMode() {
+  if (colonCommand.length == 0)
+  {
+    exitColonMode();
+    performColonCommand();
+  }
+  else
+  {
+    colonCommand = colonCommand.substring(0, colonCommand.length - 1);
+    performColonCommand();
+    showColonModeHUDForCommand();
+  }
+}
+
+function handleEnterForCommandMode() {
+  exitColonMode();
+  performColonCommand();
+}
+
+function handleKeyCharForColonMode(keyChar) {
+  colonCommand += keyChar;
+  searchColonCommand();
+  showColonModeHUDForCommand();
+}
+
 function handleDeleteForFindMode() {
   if (findModeQuery.length == 0)
   {
@@ -537,6 +584,16 @@ function handleDeleteForFindMode() {
 function handleEnterForFindMode() {
   exitFindMode();
   performFindInPlace();
+}
+
+function performColonCommand() {
+  if (colonCommand == "help") {
+    keyPort.postMessage({keyChar:"?", frameId:frameId});
+  }
+}
+
+function searchColonCommand() {
+
 }
 
 function performFindInPlace() {
@@ -608,6 +665,10 @@ function showFindModeHUDForQuery() {
     HUD.show("/" + insertSpaces(findModeQuery + " (No Matches)"));
 }
 
+function showColonModeHUDForCommand() {
+    HUD.show(":" + insertSpaces(colonCommand));
+}
+
 /*
  * We need this so that the find mode HUD doesn't match its own searches.
  */
@@ -633,6 +694,17 @@ function enterFindMode() {
 
 function exitFindMode() {
   findMode = false;
+  HUD.hide();
+}
+
+function enterColonMode() {
+  colonCommand = "";
+  colonMode = true;
+  HUD.show(":");
+}
+
+function exitColonMode() {
+  colonMode = false;
   HUD.hide();
 }
 

@@ -122,6 +122,7 @@ function clearKeyMappingsAndSetDefaults() {
     "<a-f>": "activateLinkHintsModeWithQueue",
 
     "/": "enterFindMode",
+    ":": "enterColonMode",
     "n": "performFind",
     "N": "performBackwardsFind",
 
@@ -182,6 +183,8 @@ var commandDescriptions = {
   enterFindMode: ["Enter find mode"],
   performFind: ["Cycle forward to the next find match"],
   performBackwardsFind: ["Cycle backward to the previous find match"],
+
+  enterColonMode: ["Enter colon command mode"],
 
   goPrevious: ["Follow the link labeled previous or <"],
   goNext: ["Follow the link labeled next or >"],
