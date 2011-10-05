@@ -36,7 +36,7 @@ var textInputXPath = '//input[' +
 var settings = {
   values: {},
   loadedValues: 0,
-  valuesToLoad: ["scrollStepSize", "linkHintCharacters", "filterLinkHints"],
+  valuesToLoad: ["scrollStepSize", "linkHintCharacters", "filterLinkHints", "userDefinedClickableElements"],
 
   get: function (key) { return this.values[key]; },
 

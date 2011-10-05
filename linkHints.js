@@ -8,6 +8,21 @@
  * In 'filter' mode, our link hints are numbers, and the user can narrow down the range of possibilities by
  * typing the text of the link itself.
  */
+
+/*
+* Generate an XPath describing what a clickable element is.
+* The final expression will be something like "//button | //xhtml:button | ..."
+*/
+function getClickableElementsXPath(userDefinedClickableElements) {
+    var clickableElements = ["a", "textarea", "button", "select", "input[not(@type='hidden')]",
+                             "*[@onclick or @tabindex or @role='link' or @role='button']"];
+    clickableElements.push.apply(clickableElements, userDefinedClickableElements);
+    var xpath = [];
+    for (var i in clickableElements)
+      xpath.push("//" + clickableElements[i], "//xhtml:" + clickableElements[i]);
+    return xpath.join(" | ")
+}
+
 var linkHints = {
   hintMarkers: [],
   hintMarkerContainingDiv: null,
@@ -33,20 +48,10 @@ var linkHints = {
     this.onKeyDownInMode = this.onKeyDownInMode.bind(this);
     this.onKeyUpInMode = this.onKeyUpInMode.bind(this);
     this.markerMatcher = settings.get('filterLinkHints') == "true" ? filterHints : alphabetHints;
-  },
+    this.userDefinedClickableElements = settings.get('userDefinedClickableElements').split(',');
 
-  /* 
-   * Generate an XPath describing what a clickable element is.
-   * The final expression will be something like "//button | //xhtml:button | ..."
-   */
-  clickableElementsXPath: (function() {
-    var clickableElements = ["a", "textarea", "button", "select", "input[not(@type='hidden')]",
-                             "*[@onclick or @tabindex or @role='link' or @role='button']"];
-    var xpath = [];
-    for (var i in clickableElements)
-      xpath.push("//" + clickableElements[i], "//xhtml:" + clickableElements[i]);
-    return xpath.join(" | ")
-  })(),
+    this.clickableElementsXPath = getClickableElementsXPath(this.userDefinedClickableElements);
+  },
 
   // We need this as a top-level function because our command system doesn't yet support arguments.
   activateModeToOpenInNewTab: function() { this.activateMode(true, false, false); },

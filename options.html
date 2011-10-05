@@ -35,6 +35,10 @@
         width:490px;
         min-height:100px;
       }
+      textarea#userDefinedClickableElements {
+        width:342px;
+        min-height:100px;
+      }
       textarea#userDefinedLinkHintCss {
         width:342px;
         min-height:100px;
@@ -82,9 +86,9 @@
   var defaultSettings = chrome.extension.getBackgroundPage().defaultSettings;
 
   var editableFields = ["scrollStepSize", "excludedUrls", "linkHintCharacters",
-                        "userDefinedLinkHintCss", "keyMappings", "filterLinkHints"];
+                        "userDefinedLinkHintCss", "keyMappings", "filterLinkHints", "userDefinedClickableElements"];
 
-  var canBeEmptyFields = ["excludedUrls", "keyMappings", "userDefinedLinkHintCss"];
+  var canBeEmptyFields = ["excludedUrls", "keyMappings", "userDefinedLinkHintCss", "userDefinedClickableElements"];
 
   var postSaveHooks = {
     keyMappings: function (value) {
@@ -270,6 +274,17 @@
             </div>
           </div>
           <textarea id="userDefinedLinkHintCss" type="text"></textarea>
+        </td>
+      </tr>
+      <tr class="advancedOption">
+        <td class="caption">Custom Clickable Elements</td>
+        <td verticalAlign="top">
+          <div class="help">
+              <div class="example">
+                XPath of the custom clickable elements
+              </div>
+          </div>
+          <textarea id="userDefinedClickableElements" type="text"></textarea>
         </td>
       </tr>
       <tr class="advancedOption">
